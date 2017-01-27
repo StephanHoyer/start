@@ -14,20 +14,18 @@ module.exports = function ({html, routes}) {
       Promise.resolve()
       .then(() => resolver.onmatch(req.params, req.url))
       .then(() => resolver.render({attrs: req.params}))
-      .then(component => {
-        return mithrilNodeRender(component)
-        .then(page => {
-          var replacements = {
-            "{title}": resolver.title,
-            "{description}": resolver.description,
-            "{content}":page
-          }
-          var file = html.replace(/{\w+}/g, (all) => replacements[all] || all)
-          console.log(file)
-          res.send(file)
-        })
-        .catch(err => console.log(err))
+      .then(mithrilNodeRender)
+      .then(page => {
+        var replacements = {
+          "{title}": resolver.title,
+          "{description}": resolver.description,
+          "{content}":page
+        }
+        var file = html.replace(/{\w+}/g, (all) => replacements[all] || all)
+        console.log(file)
+        res.send(file)
       })
+      .catch(err => console.log(err))
     })
   })
   return app
